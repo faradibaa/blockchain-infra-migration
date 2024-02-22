@@ -1,0 +1,9 @@
+---
+- name : Copy files
+  hosts: master_src
+  tasks:
+    - name: Copy compiled contract
+      fetch:
+        src: /home/{{ ansible_user }}/certpub-eth/web/contract/CertificateBlockchain.json
+        dest: ./temp/
+        flat: yes

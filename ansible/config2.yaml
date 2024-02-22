@@ -1,0 +1,33 @@
+---
+- name: Copy config on all vm
+  hosts: master
+  tasks:
+    - name: Create directory
+      file:
+        path: /home/{{ ansible_user }}/ibft-net/
+        state: directory
+        mode: '0755'
+    - name: Copy node config
+      copy:
+        src: ../{{ item }}/
+        dest: /home/{{ ansible_user }}/ibft-net/{{ item }}
+        mode: 0644
+      loop : "{{ nodes }}"
+    - name : Copy docker compose
+      template: 
+        src: ./templates/docker-compose.j2
+        dest: /home/{{ ansible_user }}/ibft-net/docker-compose.yml
+    - name: Copy entry point script
+      copy:
+        src: ../docker-entrypoint.sh
+        dest: /home/{{ ansible_user }}/ibft-net/docker-entrypoint.sh
+        mode: a+rx
+
+- name: Copy hosts to source master
+  hosts: master:worker
+  tasks:
+    - name: Copy hosts
+      copy:
+        src: ./hosts
+        dest: /etc/hosts
+      become: yes

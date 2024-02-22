@@ -1,0 +1,9 @@
+---
+- name: Clean node configuration on server
+  hosts: all
+  tasks:
+    - name: Remove directory
+      become: yes
+      file:
+        path: /home/{{ ansible_user }}/ibft-net/
+        state: absent

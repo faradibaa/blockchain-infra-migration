@@ -1,0 +1,16 @@
+---
+- name: Stop service on vm 1
+  hosts: master
+  tasks:
+    - name: Down docker compose
+      docker_compose:
+        project_src: /home/{{ ansible_user }}/ibft-net
+        state: absent
+
+- name: Stop service on vm 2
+  hosts: worker
+  tasks:
+    - name: Down docker compose
+      docker_compose:
+        project_src: /home/{{ ansible_user }}/ibft-net
+        state: absent

@@ -1,0 +1,19 @@
+---
+- name : Stop services
+  hosts: master_src
+  vars_files: ./vars/gitvars.yml
+  tasks:
+    - name: Stop docker-compose certpub mysql
+      docker_compose:
+          project_src: /home/{{ ansible_user }}/certpub-eth/web
+          state: absent
+    - name: System prune
+      shell:
+          cmd: docker system prune -f
+- name: Deactivate nodes
+  hosts: master_src
+  tasks:
+    - name: Stop docker compose quorum
+      docker_compose:
+        project_src: /home/{{ ansible_user }}/ibft-net
+        state: absent

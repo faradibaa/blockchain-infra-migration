@@ -1,0 +1,16 @@
+---
+- name: Deploy on master
+  hosts: master
+  tasks:
+    - name: Run docker compose
+      docker_compose:
+        project_src: /home/{{ ansible_user }}/ibft-net
+        state: present
+
+- name: Deploy on worker
+  hosts: worker
+  tasks:
+    - name: Run docker compose
+      docker_compose:
+        project_src: /home/{{ ansible_user }}/ibft-net
+        state: present

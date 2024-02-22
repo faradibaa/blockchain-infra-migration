@@ -1,0 +1,21 @@
+---
+- name : Deploy services
+  hosts: master:worker
+  vars_files: ./vars/gitvars.yml
+  tasks:
+    - name: Stop docker-compose
+      docker_compose:
+          project_src: /home/{{ ansible_user }}/certpub-eth/web
+          state: absent
+    - name: Run docker-compose
+      docker_compose:
+          project_src: /home/{{ ansible_user }}/certpub-eth/web
+          state: present
+          build: true
+    - name: Restart docker-compose
+      docker_compose:
+          project_src: /home/{{ ansible_user }}/certpub-eth/web
+          restarted: yes
+    - name: System prune
+      shell:
+          cmd: docker system prune -f

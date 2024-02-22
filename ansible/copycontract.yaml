@@ -1,0 +1,31 @@
+---
+- name : Copy smart contract
+  hosts: master:worker
+  vars_files: ./vars/gitvars.yml
+  tasks:
+    - name: Copy downloaded git repo
+      synchronize:
+        src: ../../certpub-eth
+        dest: /home/{{ ansible_user }}/
+        recursive: yes
+    - name: Copy env
+      template:
+        src: ./templates/env.docker.j2
+        dest: /home/{{ ansible_user }}/certpub-eth/web/.env.docker
+
+- name : Copy files
+  hosts: master_src
+  tasks:
+    - name: Fetch compiled contract
+      fetch:
+        src: /home/{{ ansible_user }}/certpub-eth/web/contract/CertificateBlockchain.json
+        dest: ./temp/
+        flat: yes
+
+- name : Copy smart contract
+  hosts: master:worker
+  tasks:
+    - name: Copy json file
+      copy:
+        src: ./temp/CertificateBlockchain.json
+        dest: /home/{{ ansible_user }}/certpub-eth/web/contract/

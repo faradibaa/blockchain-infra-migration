@@ -1,0 +1,31 @@
+---
+version: '3.6'
+
+x-quorum-def:
+  &quorum-def
+  image: quorumengineering/quorum:22.7.1
+  environment:
+    PRIVATE_CONFIG: ignore
+  ports:
+    - 8545:8545
+    - 8546:8546
+    - 8547:8547 
+    - 30303:30303/tcp
+    - 30303:30303/udp
+  networks:
+    - linknet
+  entrypoint: "sh -c /vol/docker-entrypoint.sh"
+    
+services:
+{% for node in nodes %}
+  {{ node }}:
+    << : *quorum-def
+    volumes:
+      - ./:/vol
+      - ./{{ node }}/data:/data
+{% endfor %}
+
+networks:
+  linknet:
+    name: linknet
+

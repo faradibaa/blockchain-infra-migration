@@ -1,0 +1,9 @@
+---
+- name: Clean node configuration on server
+  hosts: all
+  tasks:
+    - name: Remove smart contract
+      become: yes
+      file:
+        path: /home/{{ ansible_user }}/certpub-eth/
+        state: absent

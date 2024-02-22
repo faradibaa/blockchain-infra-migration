@@ -1,0 +1,14 @@
+---
+- name: Terminate instances
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Terminate instance di source
+      ec2_instance:
+        state: terminated
+        region: us-east-1
+        access_key: '{{ access_key }}'
+        secret_key: '{{ secret_key }}'
+        session_token: '{{ token }}'
+        instance_ids:
+        - i-0060766600962c356

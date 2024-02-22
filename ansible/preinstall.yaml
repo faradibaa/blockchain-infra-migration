@@ -1,0 +1,59 @@
+---
+- name: Ping, update repo, then install docker
+  hosts: master:worker
+  become: yes
+  tasks:
+    - name: Update repo
+      apt:
+        update_cache: yes
+    - name: Install docker
+      script:
+        cmd: ./script/install_docker.sh
+    - name: Add user to docker group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+        state: present
+    - name: Reset to update group changes
+      ansible.builtin.meta:
+        reset_connection
+    - name : Install pip
+      apt:
+        name: python3-pip
+        state: present
+    - name : Install docker python lib
+      become: no
+      pip:
+        name: docker
+        state: present
+    - name : Install docker compose python lib
+      become: no
+      pip:
+        name: docker-compose
+        state: present
+
+- name: Install truffle
+  hosts: master:worker
+  become: yes
+  tasks:
+    - name: "Add nodejs apt key"
+      script: 
+        cmd : ./script/install_node.sh
+    - name: "Install nodejs"
+      apt:
+        update_cache: yes
+        name: nodejs
+        state: present
+    - name: Install truffle
+      shell:
+        cmd: npm install -g truffle
+
+- name: Install MySQL client
+  hosts: master:worker
+  become: yes
+  tasks:
+    - name: Install mysql-client
+      apt:
+        name: mysql-client
+        state: present

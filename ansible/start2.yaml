@@ -1,0 +1,15 @@
+---
+- name: Start on vm worker
+  hosts: worker
+  tasks:
+    - name: Run docker compose target worker
+      docker_compose:
+        project_src: /home/{{ ansible_user }}/ibft-net
+        state: present
+- name: Start on vm master
+  hosts: master
+  tasks:
+    - name: Run docker compose target master
+      docker_compose:
+        project_src: /home/{{ ansible_user }}/ibft-net
+        state: present

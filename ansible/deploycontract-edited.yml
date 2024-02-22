@@ -1,0 +1,34 @@
+---
+- name : Deploy repo
+  hosts: all
+  vars_files: ./vars/gitvars.yml
+  tasks:
+    - name: Copy downloaded contract
+      synchronize:
+        src: ../../certpub-eth
+        dest: ~/
+    - name: Copy env
+      template:
+        src: ./templates/env.docker.j2
+        dest: ~/certpub-eth/web/.env.docker
+- name : Deploy smart contract
+  hosts: master
+  vars_files: ./vars/gitvars.yml
+  tasks:
+    - name: Deploy smartcontract
+      shell:
+        chdir: /home/{{ ansible_user }}/certpub-eth
+        cmd: truffle migrate --network quorum
+    - name: Copy build smart contract
+      fetch: 
+        src: /home/{{ ansible_user }}/certpub-eth/web/contract/CertificateBlockchain.json
+        dest: ./temp/
+        flat: yes
+- name : Deploy services
+  hosts: all
+  vars_files: ./vars/gitvars.yml
+  tasks:
+    - name: Copy smart cotract
+      copy:
+        src: ./temp/CertificateBlockchain.json
+        dest: /home/{{ ansible_user }}/certpub-eth/web/contract/
